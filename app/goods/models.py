@@ -34,3 +34,12 @@ class Products(models.Model):
 
     def __str__(self):   # Возвращает правильное название созданной нового товара:
         return f'{self.name} Количество - {self.quantity}'
+
+    def display_id(self):
+        return f"{self.id:05}" # Возвращает 'id' товара и дописывает нули с начала, чтобы було 5 цыфрЖ
+
+    def sell_price(self):
+        if self.discount:
+            return round(self.price - self.price*self.discount/100, 2)
+
+        return self.price

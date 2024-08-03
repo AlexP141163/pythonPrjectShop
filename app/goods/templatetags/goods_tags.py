@@ -1,7 +1,7 @@
 # В этом файле будут храниться пользовательские шаблонные теги:
 from django import template
 from django.utils.http import urlencode
-from goods.models import Categories
+from ..models import Categories
 
 
 register = template.Library() # Регистрация шаблонного тега который ниже с помощью декоратора:

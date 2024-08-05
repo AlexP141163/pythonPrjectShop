@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.urls import path
 
-from main import views
+from . import views
 
 app_name = 'main'
 

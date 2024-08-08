@@ -2,6 +2,11 @@
 {% load static %}
 {% load goods_tags %}
 
+{% block modal_cart %}
+{% include "includes/cart_button.html" %}
+{% endblock %}
+
+
 {% block content %}
  <div class="row">
     <!-- Форма фильтров -->
@@ -12,6 +17,7 @@
         </button>
 
         <form action="{% if request.GET.q %}{% url "catalog:search" %}{% else %}{% url "catalog:index" slug_url %}{% endif %}" method="get" class="dropdown-menu bg-dark" data-bs-theme="dark">
+            {% csrf_token %}
             <div class="form-check text-white mx-3">
                 <input class="form-check-input" type="checkbox" name="on_sale" id="flexCheckDefault" value="on" {% if request.GET.on_sale == 'on' %}checked{% endif%}>
                 {% if request.GET.q %}
@@ -47,6 +53,13 @@
         </form>
     </div>
 
+     {% if request.GET.q %}
+        <h3 class="mt-4">Результаты поиска по запросу {{ request.GET.q }}</h3>
+     {% if not goods %}
+        <link rel="stylesheet" href="{% static "deps/css/my_footer_css.css" %}">
+        <h2 class="mt-4">По запросу ничего не найдено</h2>
+     {% endif %}
+     {% endif %}
      {% for product in goods %}
          <div class="col-lg-4 col-md-6 p-4">
             <div class="card border-primary rounded custom-shadow">
@@ -67,7 +80,15 @@
                             {% endautoescape %}
                         </p>
                     </a>
-                    <p class="card-text">{{ product.description|truncatechars:35 }}</p>
+                    <p class="card-text">
+                        {% autoescape off %}
+                            {% if product.bodyline %}
+                            {{ product.bodyline|truncatechars:100}}
+                            {% else %}
+                            {{ product.description|truncatechars:35 }}
+                            {% endif %}
+                        {% endautoescape %}
+                    </p>
                     <p class="product_id">id: {{ product.display_id }}</p>
                     <div class="d-flex justify-content-between">
 
@@ -79,7 +100,7 @@
                             <<p><strong>{{ product.price }} руб.</strong></p>
                         {% endif %}
 
-                        <a href="#" class="btn add-to-cart">
+                        <a href="{% url "cart:cart_add" product.slug %}" class="btn add-to-cart">
                             <img class="mx-1" src="{% static "deps/icons/cart-plus.svg" %}" alt="Catalog Icon"
                                 width="32" height="32">
                         </a>
@@ -92,6 +113,7 @@
 </div>
 
 <!-- Пагинация -->
+{% if goods %}
 <nav aria-label="Page navigation example">
     <ul class="pagination justify-content-center my-4">
         <div class="custom-shadow d-flex">
@@ -105,6 +127,7 @@
                 <li class="page-item {% if goods.number == page %} active {% endif %}">
                     <a class="page-link" href="?{% change_params page=page %}">{{ page }}</a>
                 </li>
+            <link rel="stylesheet" href="{% static "deps/css/my_footer_css.css" %}">
             {% endif %}
             {% endfor %}
 
@@ -115,6 +138,7 @@
         </div>
     </ul>
 </nav>
+{% endif %}
 {% endblock %}
 
 {% block footer %}

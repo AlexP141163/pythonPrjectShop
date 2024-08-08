@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect, render
 
 from carts.models import Cart
 from goods.models import Products
@@ -21,10 +21,14 @@ def cart_add(request, product_slug):
 
     return redirect(request.META['HTTP_REFERER'])
 
+
 def cart_change(request, product_slug):
     ...
 
-def cart_remove(request, product_slug):
-    ...
+def cart_remove(request, cart_id):
 
+    cart = Cart.objects.get(id=cart_id)
+    cart.delete()
+
+    return redirect(request.META['HTTP_REFERER'])
 

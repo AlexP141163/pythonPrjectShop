@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 # Сздаем две таблицы: Categores и Products, by 'Class Meta: caterory and product (таблицы в базе должны быть
 # в единственном числе, это достигается строкой 'Class Meta: db_table', если этого не делать то таблицы в базе
@@ -35,8 +36,12 @@ class Products(models.Model):
     def __str__(self):   # Возвращает правильное название созданной нового товара:
         return f'{self.name} Количество - {self.quantity}'
 
+    def get_absolute_url(self):
+        return reverse("catalog:product", kwargs={"product_slug": self.slug})
+
     def display_id(self):
         return f"{self.id:05}" # Возвращает 'id' товара и дописывает нули с начала, чтобы було 5 цыфрЖ
+
 
     def sell_price(self):
         if self.discount:

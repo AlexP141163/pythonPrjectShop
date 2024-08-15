@@ -234,3 +234,16 @@ $(document).ready(function () {
         }
     });
 });
+//
+// $('#order-button').click(function(){
+//     $.ajax({
+//         url: '{% url "orders:create_order" %}',
+//         method: 'POST',
+//         data: {
+//             csrfmiddlewaretoken: '{{ csrf_token }}',
+//         },
+//         success: function(response) {
+//             alert(response.message);
+//         }
+//     });
+// });

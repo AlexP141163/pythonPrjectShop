@@ -30,7 +30,7 @@ $(document).ready(function () {
                 // Сообщение
                 successMessage.html(data.message);
                 successMessage.fadeIn(400);
-                // Через 7сек убираем сообщение
+                // Через 5 сек убираем сообщение
                 setTimeout(function () {
                     successMessage.fadeOut(400);
                 }, 5000);
@@ -81,7 +81,7 @@ $(document).ready(function () {
                 // Сообщение
                 successMessage.html(data.message);
                 successMessage.fadeIn(400);
-                // Через 7сек убираем сообщение
+                // Через 5 сек убираем сообщение
                 setTimeout(function () {
                     successMessage.fadeOut(400);
                 }, 5000);
@@ -154,12 +154,12 @@ $(document).ready(function () {
             },
 
             success: function (data) {
-                 // Сообщение
+                // Сообщение
                 successMessage.html(data.message);
                 successMessage.fadeIn(400);
-                 // Через 7сек убираем сообщение
+                // Через 5 сек убираем сообщение
                 setTimeout(function () {
-                     successMessage.fadeOut(400);
+                    successMessage.fadeOut(400);
                 }, 5000);
 
                 // Изменяем количество товаров в корзине
@@ -179,13 +179,13 @@ $(document).ready(function () {
         });
     }
 
-       // Берем из разметки элемент по id - оповещения от django
+    // Берем из разметки элемент по id - оповещения от django
     var notification = $('#notification');
-    // И через 7 сек. убираем
+    // И через 5 сек. убираем
     if (notification.length > 0) {
         setTimeout(function () {
             notification.alert('close');
-        }, 7000);
+        }, 5000);
     }
 
     // При клике по значку корзины открываем всплывающее(модальное) окно
@@ -201,7 +201,7 @@ $(document).ready(function () {
     });
 
     // Обработчик события радиокнопки выбора способа доставки
-    $("input[name='requires_delivery']").change(function() {
+    $("input[name='requires_delivery']").change(function () {
         var selectedValue = $(this).val();
         // Скрываем или отображаем input ввода адреса доставки
         if (selectedValue === "1") {
@@ -234,16 +234,3 @@ $(document).ready(function () {
         }
     });
 });
-//
-// $('#order-button').click(function(){
-//     $.ajax({
-//         url: '{% url "orders:create_order" %}',
-//         method: 'POST',
-//         data: {
-//             csrfmiddlewaretoken: '{{ csrf_token }}',
-//         },
-//         success: function(response) {
-//             alert(response.message);
-//         }
-//     });
-// });

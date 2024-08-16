@@ -19,8 +19,7 @@ class UserLoginView(LoginView):
     template_name = 'users/login.html'
     form_class = UserLoginForm
 
-    # success_url = reverse_lazy('main:index') # Чтобы использовать не зарегистрированного пользователя, комментируем
-                                               # эту строку и переопределяем метод: 'get_success_url':
+    # success_url = reverse_lazy('main:index')
 
     def get_success_url(self):
         redirect_page = self.request.POST.get('next', None)
@@ -124,7 +123,7 @@ def logout(request):
     auth.logout(request)
     return redirect(reverse('main:index'))
 
-
+#
 # def login(request):
 #     if request.method == 'POST':
 #         form = UserLoginForm(data=request.POST)
@@ -160,8 +159,8 @@ def logout(request):
 #         'form': form
 #     }
 #     return render(request, 'users/login.html', context)
-
-
+#
+#
 # def registration(request):
 #     if request.method == 'POST':
 #         form = UserRegistrationForm(data=request.POST)

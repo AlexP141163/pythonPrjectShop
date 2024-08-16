@@ -34,10 +34,10 @@
                     <div class="col p-0"><strong> {{cart.products_price}} руб.</strong></div>
                     <div class="col p-0">
                         <a href="{% url "cart:cart_remove" %}" class="remove-from-cart"
-                        data-cart-id="{{ cart.id }}">
+                            data-cart-id="{{ cart.id }}">
                             {% csrf_token %}
                             <img class="mx-1" src="{% static "deps/icons/trash3-fill.svg" %}"
-                                alt="Catalog Icon" width="16" height="16">
+                            alt="Catalog Icon" width="16" height="16">
                         </a>
                     </div>
                 </div>
@@ -52,7 +52,7 @@
     </div>
 </div>
 {% if carts and not order %}
-    <a class="btn btn-dark" href="{% url "orders:create_order" %}">
-        Оформить заказ
-    </a>
+<a class="btn btn-dark" href="{% url "orders:create_order" %}">
+    Оформить заказ
+</a>
 {% endif %}

@@ -96,14 +96,15 @@ class UserProfileView(LoginRequiredMixin, CacheMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Home - Кабинет'
+#       orders = cache.get(f"orders_for_user_{self.request.user.pk}")
 
         # Можно вынести сам запрос в отдельный метод этого класса контроллера
         orders = Order.objects.filter(user=self.request.user).prefetch_related(
-            Prefetch(
-                "orderitem_set",
-                queryset=OrderItem.objects.select_related("product"),
-            )
-        ).order_by("-id")
+                Prefetch(
+                    "orderitem_set",
+                    queryset=OrderItem.objects.select_related("product"),
+                )
+            ).order_by("-id")
 
         context['orders'] = self.set_get_cache(orders, f"user_{self.request.user.id}_orders", 60)
         return context

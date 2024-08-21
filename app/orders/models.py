@@ -31,7 +31,11 @@ class Order(models.Model):
         ordering = ("id",)
 
     def __str__(self):
-        return f"Заказ № {self.pk} | Покупатель {self.user.first_name} {self.user.last_name}"
+        if self.user:
+            return f"Заказ № {self.pk} | Покупатель {self.user.first_name} {self.user.last_name}"
+        else:
+            return f"Заказ № {self.pk} | Покупатель не указан"
+        #return f"Заказ № {self.pk} | Покупатель {self.user.first_name} {self.user.last_name}"
 
 class OrderItem(models.Model):
     order = models.ForeignKey(to=Order, on_delete=models.CASCADE, verbose_name="Заказ")

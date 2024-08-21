@@ -154,6 +154,8 @@ INTERNAL_IPS = [
     # ...
 ]
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
@@ -161,3 +163,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.User'
 LOGIN_URL = '/user/login/'
 LOGIN_REDIRECT_URL = '/'
+
+TELEGRAM_BOT_TOKEN = '7262241803:AAEIXdgDehSm2J6dLYb4FQnT46DrDNSVB38'
+TELEGRAM_CHAT_ID = '5577808909'

@@ -1,10 +1,11 @@
 # from django.core.paginator import Paginator
 from django.http import Http404
-# from django.shortcuts import render
+from django.shortcuts import redirect
 from django.views.generic import DetailView, ListView
 
-from .models import Products
+from .models import Products, Review
 from .utils import q_search
+from .forms import ReviewForm
 
 
 class CatalogView(ListView):
@@ -44,25 +45,53 @@ class CatalogView(ListView):
         context = super().get_context_data(**kwargs)
         context["title"] = "Home - Каталог"
         context["slug_url"] = self.kwargs.get(self.slug_url_kwarg)
+        context["rating_range"] = range(1, 6)  # Добавляем диапазон в контекст
         return context
 
 
-class ProductView(DetailView):
-    # model = Products      # В этом случае будет выборка всех карт товаров, а нам нужно конкретную.
-    # slug_field = "slug"
-    template_name = "goods/product.html"
-    slug_url_kwarg = "product_slug"    # Значение ключ, получить значение по конвертору 'urls.py:
-    context_object_name = "product"
+# class ProductView(DetailView):
+#     # model = Products      # В этом случае будет выборка всех карт товаров, а нам нужно конкретную.
+#     # slug_field = "slug"
+#     template_name = "goods/product.html"
+#     slug_url_kwarg = "product_slug"    # Значение ключ, получить значение по конвертору 'urls.py:
+#     context_object_name = "product"
+#
+#     def get_object(self, queryset=None):
+#         product = Products.objects.get(slug=self.kwargs.get(self.slug_url_kwarg))
+#         return product
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context["title"] = self.object.name
+#         context["range"] = range(1, 6)
+#         return context
 
-    def get_object(self, queryset=None):
-        product = Products.objects.get(slug=self.kwargs.get(self.slug_url_kwarg))
-        return product
+class ProductView(DetailView):
+    model = Products
+    template_name = "goods/product.html"
+    context_object_name = "product"
+    slug_field = 'slug'
+    slug_url_kwarg = "product_slug"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["title"] = self.object.name
+        context['form'] = ReviewForm()
+        context['reviews'] = self.object.reviews.all()
+        context['rating_range'] = range(1, 6)  # Передача диапазона 1-5 в контекст
         return context
 
+    def post(self, request, *args, **kwargs):
+        form = ReviewForm(request.POST)
+        product = self.get_object()
+
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.product = product
+            review.user = request.user  # Привязываем отзыв к текущему пользователю
+            review.save()
+            return redirect(product.get_absolute_url())
+
+        return self.get(request, *args, **kwargs)
 
 # ПРЕДЫДУЩАЯ ВЕРСИЯ:
 

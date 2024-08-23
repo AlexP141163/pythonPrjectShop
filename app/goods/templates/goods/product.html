@@ -37,15 +37,66 @@
         </div>
         <!-- Описание товара -->
         <div class="card-body">
-            <p class="card-text">Цена: <strong>{{ product.sell_price }} руб.</strong></p>
             <h5 class="card-title">{{ product.name }}</h5>
             <p class="card-text">{{ product.description }}</p>
+            <p class="card-text">Цена: <strong>{{ product.sell_price }} руб.</strong></p>
             <a href="{% url "cart:cart_add" %}" class="btn btn-dark add-to-cart"
-            data-product-id="{{ product.id }}">
-            {% csrf_token %}
-            Добавить в корзину</a>
+               data-product-id="{{ product.id }}">
+               {% csrf_token %}
+               Добавить в корзину</a>
         </div>
     </div>
-</div>
-{% endblock %}
 
+    <!-- Добавление контейнера для отзывов и формы -->
+    <div class="card mt-4 p-4 custom-shadow">
+        <!-- Раздел отзывов -->
+        <div>
+            <h4>Отзывы</h4>
+            {% for review in reviews %}
+                <div class="mb-3">
+                    <p><strong>{{ review.user.username }}</strong> ({{ review.created_at|date:"d M Y H:i" }}):</p>
+                    <p>{{ review.comment }}</p>
+                    <p>Рейтинг:
+                        {% for i in rating_range %}
+                            {% if i <= review.rating %}
+                                <span class="fa fa-star checked"></span>
+                            {% else %}
+                                <span class="fa fa-star"></span>
+                            {% endif %}
+                        {% endfor %}
+                    </p>
+                </div>
+            {% empty %}
+                <p>Пока нет отзывов. Будьте первым!</p>
+            {% endfor %}
+        </div>
+
+        <!-- Кнопка "Назад" -->
+        <button id="backButton" class="btn btn-secondary mt-3">Назад</button>
+
+        <!-- Форма для добавления отзыва -->
+        {% if user.is_authenticated %}
+            <div class="mt-4">
+                <h4>Оставить отзыв</h4>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary">Отправить отзыв</button>
+                </form>
+            </div>
+        {% else %}
+            <div class="mt-4">
+                <p>Пожалуйста, <a href="{% url 'user:login' %}?next={{ request.path }}">войдите</a>, чтобы оставить отзыв.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Скрипт для кнопки "Назад" с переходом на сохраненную страницу -->
+<script>
+    document.getElementById("backButton").addEventListener("click", function() {
+        var savedPage = localStorage.getItem('currentCatalogPage') || 1;
+        window.location.href = "{% url 'catalog:index' 'all' %}" + "?page=" + savedPage;
+    });
+</script>
+{% endblock %}

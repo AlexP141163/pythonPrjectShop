@@ -36,3 +36,45 @@ body {
   border-radius: 15px;
   font-size: 0.7rem;
 }
+
+.fa-star {
+    font-size: 20px;
+    color: #ccc;
+}
+
+.fa-star.checked {
+    color: #ffcc00;
+}
+
+
+.custom-shadow {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card {
+    margin-bottom: 20px;
+}
+
+.card .product-rating {
+    margin-top: 10px;
+}
+
+.card .form-group {
+    margin-bottom: 15px;
+}
+
+.card .btn-primary {
+    margin-top: 10px;
+}
+
+.card .reviews-section {
+    max-height: 300px; /* Максимальная высота для области отзывов */
+    overflow-y: auto;  /* Вертикальная прокрутка */
+}
+
+
+.card-img-top {
+    max-width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+}

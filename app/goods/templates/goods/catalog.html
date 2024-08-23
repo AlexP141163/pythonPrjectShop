@@ -71,7 +71,7 @@
 
     {% for product in goods %}
     <!-- Карта товара -->
-        <div class="col-lg-4 col-md-6 p-4">
+        <div class="col-lg-4 col-md-6 p-6">
             <div class="card border-primary rounded custom-shadow">
                 {% if product.image %}
                     <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
@@ -111,6 +111,7 @@
                         {% endfor %}
                         <span>({{ product.review_count }} отзывов)</span>
                     </div>
+                    <p class="card-text">В наличии: <strong>{{ product.quantity }} шт.</strong></p>
                     <p style="font-size: 12px;">Для оценки товара перейдите в карточку товара по ссылке выше.</p>
                     <div class="d-flex justify-content-between">
                         {% if product.discount %}

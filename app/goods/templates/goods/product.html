@@ -40,6 +40,7 @@
             <h5 class="card-title">{{ product.name }}</h5>
             <p class="card-text">{{ product.description }}</p>
             <p class="card-text">Цена: <strong>{{ product.sell_price }} руб.</strong></p>
+            <p class="card-text">В наличии: <strong>{{ product.quantity }} шт.</strong></p>
             <a href="{% url "cart:cart_add" %}" class="btn btn-dark add-to-cart"
                data-product-id="{{ product.id }}">
                {% csrf_token %}

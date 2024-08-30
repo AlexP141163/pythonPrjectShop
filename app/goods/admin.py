@@ -13,7 +13,7 @@ class CategoriesAdmin(admin.ModelAdmin):
 @admin.register(Products)
 class ProductsAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)} # 'prepopulated_fields' - поля которые будут заполняться автоматически:
-    list_display = ['name', 'quantity','price', 'discount', 'rating']
+    list_display = ['name', 'quantity','price', 'discount']
     list_editable = ['discount', 'price', 'quantity']
     search_fields = ['name', 'description']
     list_filter = ['discount', 'quantity', 'category']
@@ -25,7 +25,7 @@ class ProductsAdmin(admin.ModelAdmin):
         "image",
         ("price", "discount"),
         "quantity",
-        "rating",  # Добавлено поле rating в форму редактирования
+        # "rating",  # Добавлено поле rating в форму редактирования
     ]
 
 @admin.register(Review)

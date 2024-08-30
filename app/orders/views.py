@@ -1,18 +1,16 @@
 import requests
 import telegram
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.db import transaction
 from django.forms import ValidationError
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import FormView
-
+from django.conf import settings
 from carts.models import Cart
 from orders.forms import CreateOrderForm
 from orders.models import Order, OrderItem
-from django.conf import settings
 
 # Инициализация Telegram-бота
 bot = telegram.Bot(token=settings.TELEGRAM_BOT_TOKEN)
@@ -40,7 +38,7 @@ class CreateOrderView(LoginRequiredMixin, FormView):
                         user=user,
                         phone_number=form.cleaned_data['phone_number'],
                         requires_delivery=form.cleaned_data['requires_delivery'],
-                        delivery_address=form.cleaned_data['delivery_address'],
+                        delivery_address=form.cleaned_data['delivery_address'] if form.cleaned_data['requires_delivery'] else '',
                         payment_on_get=form.cleaned_data['payment_on_get'],
                     )
 
@@ -56,8 +54,7 @@ class CreateOrderView(LoginRequiredMixin, FormView):
                         quantity = cart_item.quantity
 
                         if product.quantity < quantity:
-                            raise ValidationError(f'Недостаточное количество товара {name} на складе\
-                                                       В наличии - {product.quantity}')
+                            raise ValidationError(f'Недостаточное количество товара {name} на складе. В наличии - {product.quantity}')
 
                         OrderItem.objects.create(
                             order=order,
@@ -75,27 +72,50 @@ class CreateOrderView(LoginRequiredMixin, FormView):
                     # Очистить корзину пользователя после создания заказа
                     cart_items.delete()
 
-                    # Отправка сообщения в Telegram с использованием requests
+                    # Форматирование дополнительных данных заказа
+                    requires_delivery = form.cleaned_data['requires_delivery'] == '1'  # Преобразование в логическое значение
+                    delivery_method = "Нужна доставка" if requires_delivery else "Самовывоз"
+                    payment_method = "Оплата картой" if form.cleaned_data['payment_on_get'] == '0' else "Наличными/картой при получении"
+                    delivery_address = form.cleaned_data['delivery_address'] if requires_delivery else "Не указан"
+                    phone_number = form.cleaned_data['phone_number']
+
+                    # Создание сообщения для Telegram
                     message = (
-                            f"Новый заказ от {user.username}!\n\n"
-                            f"Товары:\n" + "\n".join(items) + f"\n\nОбщая сумма: {total_price} руб."
+                        f"Новый заказ от {user.username}!\n\n"
+                        f"Телефон: {phone_number}\n"
+                        f"Товары:\n" + "\n".join(items) + f"\n\n"
+                        f"Общая сумма: {total_price} руб.\n"
+                        f"Способ доставки: {delivery_method}\n"
+                        f"Адрес доставки: {delivery_address}\n"
+                        f"Способ оплаты: {payment_method}"
                     )
 
+                    # Отправка сообщения в Telegram
                     url = f"https://api.telegram.org/bot{settings.TELEGRAM_BOT_TOKEN}/sendMessage"
-                    payload = {
-                        'chat_id': settings.TELEGRAM_CHAT_ID,
-                        'text': message
-                    }
+                    payload = {'chat_id': settings.TELEGRAM_CHAT_ID, 'text': message}
                     response = requests.post(url, data=payload)
 
                     if response.status_code != 200:
                         raise Exception(f"Ошибка при отправке сообщения в Telegram: {response.text}")
 
+                    # Отправка изображений товаров в Telegram
+                    for cart_item in OrderItem.objects.filter(order=order):
+                        product = cart_item.product
+                        if product.image:  # Проверка на наличие изображения
+                            with open(product.image.path, 'rb') as image_file:
+                                photo_url = f"https://api.telegram.org/bot{settings.TELEGRAM_BOT_TOKEN}/sendPhoto"
+                                photo_payload = {'chat_id': settings.TELEGRAM_CHAT_ID}
+                                photo_files = {'photo': image_file}
+                                photo_response = requests.post(photo_url, data=photo_payload, files=photo_files)
+
+                            if photo_response.status_code != 200:
+                                raise Exception(f"Ошибка при отправке изображения в Telegram: {photo_response.text}")
 
                     messages.success(self.request, 'Заказ оформлен!')
                     return redirect('user:profile')
+
         except ValidationError as e:
-            messages.success(self.request, str(e))
+            messages.error(self.request, str(e))
             return redirect('orders:create_order')
 
     def form_invalid(self, form):
@@ -107,6 +127,8 @@ class CreateOrderView(LoginRequiredMixin, FormView):
         context['title'] = 'Оформление заказа'
         context['order'] = True
         return context
+
+
 
 
 # @login_required

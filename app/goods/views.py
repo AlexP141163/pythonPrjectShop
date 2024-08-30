@@ -49,23 +49,6 @@ class CatalogView(ListView):
         return context
 
 
-# class ProductView(DetailView):
-#     # model = Products      # В этом случае будет выборка всех карт товаров, а нам нужно конкретную.
-#     # slug_field = "slug"
-#     template_name = "goods/product.html"
-#     slug_url_kwarg = "product_slug"    # Значение ключ, получить значение по конвертору 'urls.py:
-#     context_object_name = "product"
-#
-#     def get_object(self, queryset=None):
-#         product = Products.objects.get(slug=self.kwargs.get(self.slug_url_kwarg))
-#         return product
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context["title"] = self.object.name
-#         context["range"] = range(1, 6)
-#         return context
-
 class ProductView(DetailView):
     model = Products
     template_name = "goods/product.html"
@@ -92,6 +75,24 @@ class ProductView(DetailView):
             return redirect(product.get_absolute_url())
 
         return self.get(request, *args, **kwargs)
+
+# class ProductView(DetailView):
+#     # model = Products      # В этом случае будет выборка всех карт товаров, а нам нужно конкретную.
+#     # slug_field = "slug"
+#     template_name = "goods/product.html"
+#     slug_url_kwarg = "product_slug"    # Значение ключ, получить значение по конвертору 'urls.py:
+#     context_object_name = "product"
+#
+#     def get_object(self, queryset=None):
+#         product = Products.objects.get(slug=self.kwargs.get(self.slug_url_kwarg))
+#         return product
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context["title"] = self.object.name
+#         context["range"] = range(1, 6)
+#         return context
+
 
 # ПРЕДЫДУЩАЯ ВЕРСИЯ:
 

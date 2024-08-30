@@ -44,6 +44,7 @@ class Products(models.Model):
         verbose_name = 'Продукт' # Имя будет отображаться в admin - панеле на русском языке в едиственном числе:
         verbose_name_plural = 'Продукты'  # Имя будет отображаться в admin-панеле на русском языке во множественном числе:
         ordering = ('id',)
+
     def __str__(self):   # Возвращает правильное название созданной нового товара:
         return f'{self.name} Количество - {self.quantity}'
 
@@ -70,6 +71,7 @@ class Review(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+        verbose_name = 'Рейтинг товаров'
 
     def __str__(self):
         return f'Отзыв от {self.user.username} на {self.product.name}'

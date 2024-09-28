@@ -1,0 +1,6 @@
+/* static/css/admin_custom.css */
+.field-requires_delivery input,
+.field-status input,
+.field-phone_number input {
+    width: 100px; /* Измените ширину по вашему усмотрению */
+}

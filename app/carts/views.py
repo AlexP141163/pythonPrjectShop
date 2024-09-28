@@ -9,7 +9,6 @@ from carts.utils import get_user_carts
 from goods.models import Products
 
 
-
 class CartAddView(CartMixin, View):
     def post(self, request):
         product_id = request.POST.get("product_id")
